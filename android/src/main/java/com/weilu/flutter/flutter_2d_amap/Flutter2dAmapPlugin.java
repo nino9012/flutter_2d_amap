@@ -1,9 +1,14 @@
 package com.weilu.flutter.flutter_2d_amap;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.services.core.ServiceSettings;
+
+import java.util.logging.Logger;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -50,13 +55,8 @@ public class Flutter2dAmapPlugin implements FlutterPlugin, ActivityAware{
   public void onAttachedToActivity(@NonNull final ActivityPluginBinding binding) {
     activityBinding = binding;
     
-    BinaryMessenger messenger = pluginBinding.getBinaryMessenger();
-    AMap2DFactory mFactory = new AMap2DFactory(messenger, null);
-    pluginBinding.getPlatformViewRegistry().registerViewFactory("plugins.weilu/flutter_2d_amap", mFactory);
+    final BinaryMessenger messenger = pluginBinding.getBinaryMessenger();
 
-    delegate = new AMap2DDelegate(binding.getActivity());
-    binding.addRequestPermissionsResultListener(delegate);
-    mFactory.setDelegate(delegate);
 
     methodChannel = new MethodChannel(messenger, "plugins.weilu/flutter_2d_amap_");
     methodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
@@ -71,6 +71,24 @@ public class Flutter2dAmapPlugin implements FlutterPlugin, ActivityAware{
             AMapLocationClient.updatePrivacyShow(binding.getActivity(), isAgree, isAgree);
             AMapLocationClient.updatePrivacyAgree(binding.getActivity(), isAgree);
             break;
+          case "setOnlyLocation":
+            boolean isOnlyLocation = "true".equals(methodCall.arguments);
+            if (isOnlyLocation){
+              Log.d("location","setOnlyLocation true");
+              OnlyLocation onlyLocation = new OnlyLocation(pluginBinding.getApplicationContext(),messenger);
+              delegate = new AMap2DDelegate(binding.getActivity());
+              binding.addRequestPermissionsResultListener(delegate);
+              onlyLocation.setAMap2DDelegate(delegate);
+            }else {
+              Log.d("location","setOnlyLocation flase");
+              AMap2DFactory mFactory = new AMap2DFactory(pluginBinding.getBinaryMessenger(), null);
+              pluginBinding.getPlatformViewRegistry().registerViewFactory("plugins.weilu/flutter_2d_amap", mFactory);
+
+              delegate = new AMap2DDelegate(binding.getActivity());
+              binding.addRequestPermissionsResultListener(delegate);
+              mFactory.setDelegate(delegate);
+            }
+            break;
           default:
             break;
         }
@@ -78,6 +96,8 @@ public class Flutter2dAmapPlugin implements FlutterPlugin, ActivityAware{
     });
 
   }
+
+
 
   @Override
   public void onDetachedFromActivity() {

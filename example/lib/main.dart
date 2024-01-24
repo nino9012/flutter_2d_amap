@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_2d_amap/flutter_2d_amap.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Flutter2dAMap.updatePrivacy(true);
+  Flutter2dAMap.onlyLocation(true,onLocation: (result){
+    LocationResult location = result;
+  });
   Flutter2dAMap.setApiKey(
     iOSKey: '1a8f6a489483534a9f2ca96e4eeeb9b3',
     webKey: '4e479545913a3a180b3cffc267dad646',
@@ -37,22 +42,23 @@ class _MyAppState extends State<MyApp> {
             children: <Widget>[
               Expanded(
                 flex: 9,
-                child: AMap2DView(
-                  onPoiSearched: (result) {
-                    if (result.isEmpty) {
-                      print('无搜索结果返回');
-                      return;
-                    }
-                    _controller.animateTo(0.0, duration: const Duration(milliseconds: 10), curve: Curves.ease);
-                    setState(() {
-                      _index = 0;
-                      _list = result;
-                    });
-                  },
-                  onAMap2DViewCreated: (controller) {
-                    _aMap2DController = controller;
-                  },
-                ),
+                child: Text("111")
+//                AMap2DView(
+//                  onPoiSearched: (result) {
+//                    if (result.isEmpty) {
+//                      print('无搜索结果返回');
+//                      return;
+//                    }
+//                    _controller.animateTo(0.0, duration: const Duration(milliseconds: 10), curve: Curves.ease);
+//                    setState(() {
+//                      _index = 0;
+//                      _list = result;
+//                    });
+//                  },
+//                  onAMap2DViewCreated: (controller) {
+//                    _aMap2DController = controller;
+//                  },
+//                ),
               ),
               Expanded(
                 flex: 11,

@@ -170,6 +170,19 @@ public class AMap2DView implements PlatformView, MethodChannel.MethodCallHandler
                 mListener.onLocationChanged(aMapLocation);
                 aMap.moveCamera(CameraUpdateFactory.zoomTo(16));
                 search(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+//                postMessageRunnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Map<String, String> map = new HashMap<>(2);
+//                        map.put("location", builder.toString());
+//                        methodChannel.invokeMethod("poiSearchResult", map);
+//                    }
+//                };
+//                if (platformThreadHandler.getLooper() == Looper.myLooper()) {
+//                    postMessageRunnable.run();
+//                } else {
+//                    platformThreadHandler.post(postMessageRunnable);
+//                }
             } else {
                 Toast.makeText(context,"定位失败，请检查GPS是否开启！", Toast.LENGTH_SHORT).show();
             }
